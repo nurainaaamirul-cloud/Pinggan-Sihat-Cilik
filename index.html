@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PINGGAN SIHAT CILIK - Imbas Pinggan, Kenali Makanan!</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip Library for client-side automated ZIP extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- Google Fonts: Fredoka & Nunito for vibrant preschool typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome for Cute Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #FFF8E7; /* Cream soft base */
+            background-image: radial-gradient(#F8BBD0 1.5px, transparent 1.5px), radial-gradient(#A5D6A7 1.5px, #FFF8E7 1.5px);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            color: #333333;
+        }
+
+        h1, h2, h3, .font-title {
+            font-family: 'Fredoka', cursive;
+        }
+
+        /* Tactile button animation & drop shadow */
+        .btn-kid {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+        }
+        .btn-kid:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
+        }
+        .btn-kid:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .card-rounded {
+            border-radius: 28px;
+        }
+
+        /* Custom Scrollbar for list columns */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        /* Animated pulse badge & scanning line */
+        @keyframes pulse-gentle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-animation {
+            animation: pulse-gentle 2.5s infinite ease-in-out;
+        }
+
+        @keyframes scan-line {
+            0% { top: 0%; }
+            50% { top: 90%; }
+            100% { top: 0%; }
+        }
+        .scanner-beam {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #10B981, #F59E0B, transparent);
+            box-shadow: 0 0 15px #10B981;
+            animation: scan-line 2.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6 select-none">
+
+    <header class="max-w-6xl mx-auto w-full mb-4">
+        <div class="bg-white/90 backdrop-blur card-rounded p-4 md:p-5 border-4 border-yellow-300 shadow-lg flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="goToHome()">
+                <div class="w-12 h-12 md:w-14 md:h-14 bg-red-400 rounded-full flex items-center justify-center text-white text-2xl shadow-md transform -rotate-6">
+                    🍎
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-3xl font-bold text-emerald-600 leading-none">PINGGAN SIHAT CILIK</h1>
+                    <p class="text-xs md:text-sm font-bold text-pink-500 mt-1">Imbas Pinggan, Kenali Makanan!</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2">
+                <button onclick="openCustomImageModal()" class="btn-kid bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3.5 py-2 rounded-full text-xs md:text-sm border-2 border-amber-300 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-file-zipper text-amber-600 text-base"></i> Gambar Rujukan (ZIP)
+                </button>
+                <span class="bg-amber-100 text-amber-800 font-bold px-3.5 py-2 rounded-full text-xs md:text-sm border-2 border-amber-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Disokong Gemini AI
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full flex-grow flex flex-col justify-center">
+
+        <!-- HOME PAGE -->
+        <section id="page-home" class="w-full flex flex-col items-center">
+            
+            <div class="w-full max-w-3xl bg-white card-rounded p-6 md:p-10 border-4 border-pink-200 shadow-xl text-center relative overflow-hidden">
+                <div class="absolute -top-6 -left-6 w-20 h-20 bg-green-100 rounded-full opacity-60"></div>
+                <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-yellow-100 rounded-full opacity-60"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-block bg-yellow-100 text-yellow-800 text-sm md:text-base font-extrabold px-4 py-2 rounded-full mb-4 border-2 border-yellow-300 shadow-sm pulse-animation">
+                        <i class="fa-solid fa-utensils mr-2 text-orange-500"></i> Mari Belajar Makan Sihat!
+                    </div>
+
+                    <h2 class="text-2xl md:text-4xl font-extrabold text-emerald-600 mb-3">
+                        Pilih gambar pinggan kamu, kemudian tekan <span class="text-pink-500">Imbas Pinggan!</span>
+                    </h2>
+                    <p class="text-gray-600 text-sm md:text-base mb-8 font-semibold">
+                        Ambil gambar pinggan makanan kamu hari ini atau muat naik dari peranti!
+                    </p>
+
+                    <div id="section-select-buttons" class="flex flex-col sm:flex-row gap-4 justify-center items-center my-4">
+                        <button onclick="openCameraModal()" class="btn-kid w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-lg md:text-xl px-8 py-4 rounded-2xl border-b-4 border-emerald-700 flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-camera text-2xl"></i>
+                            <span>Ambil Gambar</span>
+                        </button>
+
+                        <label for="input-image-file" class="btn-kid w-full sm:w-auto bg-amber-400 hover:bg-amber-500 text-slate-800 font-extrabold text-lg md:text-xl px-8 py-4 rounded-2xl border-b-4 border-amber-600 flex items-center justify-center gap-3 cursor-pointer">
+                            <i class="fa-solid fa-image text-2xl text-amber-900"></i>
+                            <span>Muat Naik Gambar</span>
+                        </label>
+                        <input type="file" id="input-image-file" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                    </div>
+
+                    <div id="section-image-preview" class="hidden flex-col items-center mt-4">
+                        <div class="relative max-w-md w-full bg-slate-100 rounded-3xl p-3 border-4 border-emerald-300 shadow-inner mb-6 overflow-hidden">
+                            <img id="img-home-preview" src="" alt="Pratonton Pinggan" class="w-full h-64 md:h-80 object-cover rounded-2xl shadow-sm">
+                            <span class="absolute top-5 right-5 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                                <i class="fa-solid fa-check mr-1"></i> Gambar Dipilih
+                            </span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                            <button onclick="resetSelectedImage()" class="btn-kid bg-rose-400 hover:bg-rose-500 text-white font-extrabold text-base md:text-lg px-6 py-3.5 rounded-2xl border-b-4 border-rose-600 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>Pilih Gambar Lain</span>
+                            </button>
+
+                            <button onclick="startAiPlateScan()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-lg md:text-xl px-8 py-3.5 rounded-2xl border-b-4 border-emerald-700 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Imbas Pinggan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="banner-error" class="hidden mt-6 bg-red-100 border-2 border-red-400 text-red-700 px-4 py-3 rounded-2xl text-sm font-bold items-center justify-between">
+                        <span id="text-error-message"><i class="fa-solid fa-circle-exclamation mr-2"></i> Ralat berlaku.</span>
+                        <button onclick="hideErrorBanner()" class="text-red-700 hover:text-red-900 ml-4">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS PAGE WITH 3 COLUMNS -->
+        <section id="page-results" class="hidden w-full flex-col">
+            
+            <!-- AI STATUS BADGE -->
+            <div id="ai-status-card" class="w-full bg-indigo-100 border-3 border-indigo-300 card-rounded p-4 mb-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div id="ai-icon-bg" class="w-11 h-11 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm">
+                        <i id="ai-status-icon" class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-indigo-950 text-base md:text-lg">Pengecaman Gemini AI</p>
+                        <p class="text-indigo-800 text-xs md:text-sm font-bold" id="ai-status-text">
+                            Gemini AI sedang menganalisis makanan pada pinggan...
+                        </p>
+                    </div>
+                </div>
+                <span id="ai-badge-status" class="bg-indigo-200 text-indigo-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-indigo-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-spinner fa-spin text-indigo-700"></i> Memproses...
+                </span>
+            </div>
+
+            <!-- 3 COLUMN DISPLAY -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start w-full">
+                
+                <!-- COLUMN 1: PINGGAN SAYA -->
+                <div class="bg-white card-rounded p-5 border-4 border-amber-300 shadow-md flex flex-col h-full min-h-[440px]">
+                    <div class="bg-amber-100 text-amber-900 rounded-2xl py-2 px-4 text-center font-extrabold text-lg mb-4 border-2 border-amber-300 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plate-wheat text-amber-700"></i>
+                        <span>PINGGAN SAYA</span>
+                    </div>
+                    
+                    <div class="relative flex-grow flex items-center justify-center bg-amber-50 rounded-2xl p-2 border-2 border-dashed border-amber-200 overflow-hidden mb-3 min-h-[260px]">
+                        <img id="img-result-original" src="" alt="Gambar Asal Pinggan Saya" class="w-full h-64 md:h-72 object-cover rounded-xl shadow-sm">
+                        <div id="scanning-overlay" class="hidden absolute inset-0 bg-black/20 flex flex-col items-center justify-center">
+                            <div class="scanner-beam"></div>
+                            <span class="bg-black/70 text-white font-extrabold text-xs px-3 py-1.5 rounded-full backdrop-blur">
+                                <i class="fa-solid fa-magnifying-glass mr-1"></i> Menganalisis...
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-xs font-bold text-gray-500 bg-gray-100 py-1.5 px-3 rounded-xl">
+                        <i class="fa-solid fa-image text-amber-600 mr-1"></i> Gambar asal pinggan kamu
+                    </p>
+                </div>
+
+                <!-- COLUMN 2: SIHAT -->
+                <div class="bg-emerald-50 card-rounded p-5 border-4 border-emerald-300 shadow-md flex flex-col h-full min-h-[440px]">
+                    <div class="bg-emerald-500 text-white rounded-2xl py-2 px-4 text-center font-extrabold text-lg mb-4 border-2 border-emerald-600 flex items-center justify-center gap-2 shadow-sm">
+                        <span>SIHAT 😊</span>
+                    </div>
+
+                    <div id="list-healthy-foods" class="flex-grow space-y-3 overflow-y-auto max-h-[380px] custom-scroll pr-1">
+                        <div class="h-full flex flex-col items-center justify-center p-6 text-center text-emerald-800 bg-white/70 rounded-2xl border-2 border-dashed border-emerald-200 min-h-[260px]">
+                            <div class="text-4xl mb-2">🥦🍚🍎</div>
+                            <p class="font-extrabold text-sm md:text-base">Sedang mengimbas...</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 pt-2 border-t border-emerald-200 text-center">
+                        <span id="healthy-count-tag" class="text-xs font-bold text-emerald-700">0 Makanan Sihat Ditemui</span>
+                    </div>
+                </div>
+
+                <!-- COLUMN 3: PERLU DIKURANGKAN -->
+                <div class="bg-pink-50 card-rounded p-5 border-4 border-pink-300 shadow-md flex flex-col h-full min-h-[440px]">
+                    <div class="bg-pink-500 text-white rounded-2xl py-2 px-4 text-center font-extrabold text-lg mb-4 border-2 border-pink-600 flex items-center justify-center gap-2 shadow-sm">
+                        <span>PERLU DIKURANGKAN 😟</span>
+                    </div>
+
+                    <div id="list-unhealthy-foods" class="flex-grow space-y-3 overflow-y-auto max-h-[380px] custom-scroll pr-1">
+                        <div class="h-full flex flex-col items-center justify-center p-6 text-center text-pink-800 bg-white/70 rounded-2xl border-2 border-dashed border-pink-200 min-h-[260px]">
+                            <div class="text-4xl mb-2">🍩🧃🍟</div>
+                            <p class="font-extrabold text-sm md:text-base">Sedang mengimbas...</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 pt-2 border-t border-pink-200 text-center">
+                        <span id="unhealthy-count-tag" class="text-xs font-bold text-pink-700">0 Makanan Perlu Dikurangkan</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CONTROL BUTTONS -->
+            <div class="mt-8 flex flex-wrap justify-center items-center gap-4 bg-white/80 card-rounded p-4 border-2 border-yellow-300 shadow-sm">
+                <button onclick="startAiPlateScan()" class="btn-kid bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold text-base md:text-lg px-6 py-3.5 rounded-2xl border-b-4 border-indigo-700 flex items-center gap-2">
+                    <i class="fa-solid fa-rotate text-lg"></i>
+                    <span>Imbas Semula</span>
+                </button>
+
+                <button onclick="selectNewPicture()" class="btn-kid bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-base md:text-lg px-6 py-3.5 rounded-2xl border-b-4 border-amber-700 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-open text-lg"></i>
+                    <span>Pilih Gambar Baharu</span>
+                </button>
+
+                <button onclick="goToHome()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-base md:text-lg px-6 py-3.5 rounded-2xl border-b-4 border-emerald-700 flex items-center gap-2">
+                    <i class="fa-solid fa-house text-lg"></i>
+                    <span>Kembali ke Halaman Utama</span>
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="modal-camera" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4">
+        <div class="bg-white card-rounded border-4 border-amber-400 p-5 max-w-lg w-full flex flex-col items-center shadow-2xl relative">
+            <button onclick="closeCameraModal()" class="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-full font-bold flex items-center justify-center text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-extrabold text-emerald-600 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-camera"></i> Ambil Gambar Pinggan
+            </h3>
+            <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden mb-4 border-2 border-gray-300 flex items-center justify-center">
+                <video id="camera-video" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+            </div>
+            <button onclick="captureCameraPhoto()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-lg px-8 py-3 rounded-2xl border-b-4 border-emerald-700 flex items-center gap-2">
+                <i class="fa-solid fa-circle-dot"></i>
+                <span>Tangkap Gambar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL GAMBAR RUJUKAN MAKANAN WITH ZIP EXTRACTION SECTION -->
+    <div id="modal-custom-images" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4">
+        <div class="bg-white card-rounded border-4 border-amber-400 p-5 max-w-2xl w-full flex flex-col shadow-2xl relative max-h-[90vh]">
+            
+            <button onclick="closeCustomImageModal()" class="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-full font-bold flex items-center justify-center text-xl z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-4 text-center">
+                <h3 class="text-2xl font-extrabold text-amber-600 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-images"></i> Pengurus Gambar Rujukan (ZIP)
+                </h3>
+                <p class="text-xs md:text-sm text-gray-600 mt-1 font-bold">
+                    Muat naik fail ZIP untuk mengestrak dan memasukkan kesemua 21 gambar makanan secara automatik.
+                </p>
+            </div>
+
+            <!-- AUTOMATED ZIP UPLOAD BOX -->
+            <div class="mb-4 p-4 bg-amber-50 rounded-2xl border-2 border-dashed border-amber-300 flex flex-col items-center text-center">
+                <div class="flex items-center gap-2 text-amber-900 font-extrabold text-sm md:text-base mb-1">
+                    <i class="fa-solid fa-file-zipper text-2xl text-amber-600"></i>
+                    <span>Muat Naik Fail ZIP Makanan Pukal</span>
+                </div>
+                <p class="text-xs text-amber-800 font-semibold mb-3">
+                    Pilih kedua-dua fail <code class="bg-amber-200 px-1.5 py-0.5 rounded text-amber-950">makanan_sihat.zip</code> dan <code class="bg-amber-200 px-1.5 py-0.5 rounded text-amber-950">makanan_perlu_dikurangkan.zip</code> serentak.
+                </p>
+
+                <label for="input-zip-files" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm md:text-base px-6 py-2.5 rounded-xl border-b-4 border-emerald-700 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Pilih Fail ZIP (Ekstrak Otomatik)</span>
+                </label>
+                <input type="file" id="input-zip-files" accept=".zip" multiple class="hidden" onchange="handleZipUpload(event)">
+
+                <div id="zip-status-msg" class="hidden mt-3 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 p-2 rounded-xl w-full text-center">
+                    <!-- Dynamic ZIP status -->
+                </div>
+            </div>
+
+            <div id="custom-foods-list" class="flex-grow space-y-3 overflow-y-auto custom-scroll pr-2 mb-4 max-h-[40vh]">
+                <!-- Dynamic food list -->
+            </div>
+
+            <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+                <button onclick="resetAllReferenceImages()" class="text-xs font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> Set Semula Semua Gambar
+                </button>
+                <button onclick="closeCustomImageModal()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-6 py-2.5 rounded-xl border-b-4 border-emerald-700">
+                    Selesai & Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto w-full mt-6 text-center text-xs font-bold text-gray-500 py-2">
+        <p>PINGGAN SIHAT CILIK &copy; Aplikasi Pendidikan Pemakanan Prasekolah Malaysia</p>
+    </footer>
+
+    <script>
+        // Storage for custom reference images by food ID
+        let customFoodImages = {};
+
+        // Load custom images from localStorage if available
+        try {
+            const savedImages = localStorage.getItem('pinggan_sihat_custom_images');
+            if (savedImages) {
+                customFoodImages = JSON.parse(savedImages);
+            }
+        } catch (e) {
+            console.warn("Could not load stored custom images", e);
+        }
+
+        // Helper function to generate high quality SVG Data URIs for all preset food items
+        function createSvgDataUri(emoji, label, bgColor = '#FEF3C7', strokeColor = '#F59E0B') {
+            const svgString = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                <rect width="100%" height="100%" rx="30" fill="${bgColor}"/>
+                <circle cx="100" cy="90" r="65" fill="#FFFFFF" stroke="${strokeColor}" stroke-width="4" opacity="0.9"/>
+                <text x="50%" y="105" font-size="70" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+                <rect x="20" y="152" width="160" height="32" rx="12" fill="${strokeColor}"/>
+                <text x="50%" y="173" font-size="14" font-weight="bold" font-family="sans-serif" fill="#FFFFFF" text-anchor="middle">${label}</text>
+            </svg>`.trim();
+            return `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
+        }
+
+        // PRESET FOODS STRICTLY LIMITED TO THE 21 ALLOWED ITEMS
+        const PRESET_FOODS = [
+            // Kategori: SIHAT 😊 (16 Item)
+            { id: "ayam_bakar", name: "Ayam Bakar", category: "SIHAT", emoji: "🍗", image: createSvgDataUri("🍗", "Ayam Bakar", "#ECFDF5", "#10B981") },
+            { id: "daging_bakar", name: "Daging Bakar", category: "SIHAT", emoji: "🥩", image: createSvgDataUri("🥩", "Daging Bakar", "#ECFDF5", "#10B981") },
+            { id: "epal", name: "Epal", category: "SIHAT", emoji: "🍎", image: createSvgDataUri("🍎", "Epal", "#ECFDF5", "#10B981") },
+            { id: "ikan_bakar", name: "Ikan Bakar", category: "SIHAT", emoji: "🐟", image: createSvgDataUri("🐟", "Ikan Bakar", "#ECFDF5", "#10B981") },
+            { id: "lobak_merah", name: "Lobak Merah", category: "SIHAT", emoji: "🥕", image: createSvgDataUri("🥕", "Lobak Merah", "#ECFDF5", "#10B981") },
+            { id: "mi", name: "Mi", category: "SIHAT", emoji: "🍜", image: createSvgDataUri("🍜", "Mi", "#ECFDF5", "#10B981") },
+            { id: "nasi_putih", name: "Nasi Putih", category: "SIHAT", emoji: "🍚", image: createSvgDataUri("🍚", "Nasi Putih", "#ECFDF5", "#10B981") },
+            { id: "oren", name: "Oren", category: "SIHAT", emoji: "🍊", image: createSvgDataUri("🍊", "Oren", "#ECFDF5", "#10B981") },
+            { id: "roti_bakar", name: "Roti Bakar", category: "SIHAT", emoji: "🍞", image: createSvgDataUri("🍞", "Roti Bakar", "#ECFDF5", "#10B981") },
+            { id: "salad", name: "Salad", category: "SIHAT", emoji: "🥗", image: createSvgDataUri("🥗", "Salad", "#ECFDF5", "#10B981") },
+            { id: "sayur_sawi", name: "Sayur Sawi", category: "SIHAT", emoji: "🥬", image: createSvgDataUri("🥬", "Sayur Sawi", "#ECFDF5", "#10B981") },
+            { id: "telur_rebus", name: "Telur Rebus", category: "SIHAT", emoji: "🥚", image: createSvgDataUri("🥚", "Telur Rebus", "#ECFDF5", "#10B981") },
+            { id: "tembikai", name: "Tembikai", category: "SIHAT", emoji: "🍉", image: createSvgDataUri("🍉", "Tembikai", "#ECFDF5", "#10B981") },
+            { id: "timun", name: "Timun", category: "SIHAT", emoji: "🥒", image: createSvgDataUri("🥒", "Timun", "#ECFDF5", "#10B981") },
+            { id: "tomato", name: "Tomato", category: "SIHAT", emoji: "🍅", image: createSvgDataUri("🍅", "Tomato", "#ECFDF5", "#10B981") },
+            { id: "udang", name: "Udang", category: "SIHAT", emoji: "🦐", image: createSvgDataUri("🦐", "Udang", "#ECFDF5", "#10B981") },
+
+            // Kategori: PERLU DIKURANGKAN 😟 (5 Item)
+            { id: "burger", name: "Burger", category: "PERLU_DIKURANGKAN", emoji: "🍔", image: createSvgDataUri("🍔", "Burger", "#FDF2F8", "#EC4899") },
+            { id: "donut", name: "Donut", category: "PERLU_DIKURANGKAN", emoji: "🍩", image: createSvgDataUri("🍩", "Donut", "#FDF2F8", "#EC4899") },
+            { id: "kek", name: "Kek", category: "PERLU_DIKURANGKAN", emoji: "🍰", image: createSvgDataUri("🍰", "Kek", "#FDF2F8", "#EC4899") },
+            { id: "piza", name: "Piza", category: "PERLU_DIKURANGKAN", emoji: "🍕", image: createSvgDataUri("🍕", "Piza", "#FDF2F8", "#EC4899") },
+            { id: "sosej", name: "Sosej", category: "PERLU_DIKURANGKAN", emoji: "🌭", image: createSvgDataUri("🌭", "Sosej", "#FDF2F8", "#EC4899") }
+        ];
+
+        let currentImageDataUrl = null;
+        let mediaStream = null;
+
+        const pageHome = document.getElementById('page-home');
+        const pageResults = document.getElementById('page-results');
+        const sectionSelectButtons = document.getElementById('section-select-buttons');
+        const sectionImagePreview = document.getElementById('section-image-preview');
+        const imgHomePreview = document.getElementById('img-home-preview');
+        const imgResultOriginal = document.getElementById('img-result-original');
+        const bannerError = document.getElementById('banner-error');
+        const textErrorMessage = document.getElementById('text-error-message');
+        const scanningOverlay = document.getElementById('scanning-overlay');
+
+        const aiStatusCard = document.getElementById('ai-status-card');
+        const aiStatusText = document.getElementById('ai-status-text');
+        const aiStatusIcon = document.getElementById('ai-status-icon');
+        const aiBadgeStatus = document.getElementById('ai-badge-status');
+        const aiIconBg = document.getElementById('ai-icon-bg');
+        const listHealthyFoods = document.getElementById('list-healthy-foods');
+        const listUnhealthyFoods = document.getElementById('list-unhealthy-foods');
+        const healthyCountTag = document.getElementById('healthy-count-tag');
+        const unhealthyCountTag = document.getElementById('unhealthy-count-tag');
+
+        const modalCamera = document.getElementById('modal-camera');
+        const cameraVideo = document.getElementById('camera-video');
+        const cameraCanvas = document.getElementById('camera-canvas');
+
+        function goToHome() {
+            pageResults.classList.add('hidden');
+            pageResults.classList.remove('flex');
+            pageHome.classList.remove('hidden');
+            pageHome.classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showResultsPage() {
+            pageHome.classList.add('hidden');
+            pageHome.classList.remove('flex');
+            pageResults.classList.remove('hidden');
+            pageResults.classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleFileUpload(event) {
+            hideErrorBanner();
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showErrorBanner('Sila pilih fail gambar yang sah (JPG, PNG).');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                setPlateImage(e.target.result);
+            };
+            reader.onerror = function () {
+                showErrorBanner('Gagal membaca gambar. Sila cuba lagi.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setPlateImage(dataUrl) {
+            currentImageDataUrl = dataUrl;
+            imgHomePreview.src = dataUrl;
+            imgResultOriginal.src = dataUrl;
+
+            sectionSelectButtons.classList.add('hidden');
+            sectionImagePreview.classList.remove('hidden');
+            sectionImagePreview.classList.add('flex');
+        }
+
+        function resetSelectedImage() {
+            currentImageDataUrl = null;
+            imgHomePreview.src = '';
+            document.getElementById('input-image-file').value = '';
+
+            sectionImagePreview.classList.add('hidden');
+            sectionImagePreview.classList.remove('flex');
+            sectionSelectButtons.classList.remove('hidden');
+            hideErrorBanner();
+        }
+
+        async function openCameraModal() {
+            hideErrorBanner();
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showErrorBanner('Pelayar anda tidak menyokong fungsi kamera.');
+                return;
+            }
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' }, 
+                    audio: false 
+                });
+                cameraVideo.srcObject = mediaStream;
+                modalCamera.classList.remove('hidden');
+                modalCamera.classList.add('flex');
+            } catch (err) {
+                console.error("Camera Access Error:", err);
+                showErrorBanner('Kebenaran menggunakan kamera ditolak atau kamera tidak ditemui.');
+            }
+        }
+
+        function closeCameraModal() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            modalCamera.classList.add('hidden');
+            modalCamera.classList.remove('flex');
+        }
+
+        function captureCameraPhoto() {
+            if (!cameraVideo.srcObject) return;
+
+            const context = cameraCanvas.getContext('2d');
+            cameraCanvas.width = cameraVideo.videoWidth || 640;
+            cameraCanvas.height = cameraVideo.videoHeight || 480;
+
+            context.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+            const capturedDataUrl = cameraCanvas.toDataURL('image/jpeg');
+
+            setPlateImage(capturedDataUrl);
+            closeCameraModal();
+        }
+
+        function selectNewPicture() {
+            resetSelectedImage();
+            goToHome();
+        }
+
+        async function startAiPlateScan() {
+            if (!currentImageDataUrl) {
+                showErrorBanner('Sila pilih atau ambil gambar pinggan terlebih dahulu!');
+                return;
+            }
+
+            showResultsPage();
+            setAiLoadingState(true);
+
+            try {
+                const resultData = await callGeminiVisionApi(currentImageDataUrl);
+                renderAiResults(resultData);
+            } catch (error) {
+                console.error("Gemini AI Analysis Error:", error);
+                setAiErrorState(error.message || 'Gagal menganalisis gambar dengan Gemini AI.');
+            } finally {
+                setAiLoadingState(false);
+            }
+        }
+
+        async function callGeminiVisionApi(dataUrl) {
+            const base64Data = dataUrl.split(',')[1] || dataUrl;
+            const mimeMatch = dataUrl.match(/^data:(image\/[a-zA-Z]+);base64,/);
+            const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const allowedIds = PRESET_FOODS.map(f => f.id);
+            const validFoodsListString = PRESET_FOODS.map(f => `- ID: "${f.id}" | Nama: "${f.name}" | Kategori: "${f.category}"`).join('\n');
+
+            const promptText = `
+Anda adalah pakar pemakanan prasekolah. Analisis gambar pinggan makanan yang diberikan dengan teliti.
+
+PERATURAN KETAT DAN WAJIB:
+1. Anda HANYA BOLEH memilih makanan daripada SENARAI DIBENARKAN di bawah.
+2. JANGAN cipta ID atau nama makanan baharu. JANGAN teka makanan yang tidak pasti.
+3. Kenal pasti SEMUA makanan yang kelihatan jelas pada pinggan. Jika ada beberapa makanan dalam satu pinggan (contoh: Nasi Putih, Ayam Bakar, dan Timun), masukkan setiap makanan tersebut.
+4. JANGAN ulang atau masukkan ID makanan yang sama lebih daripada sekali.
+
+SENARAI MAKANAN DIBENARKAN:
+${validFoodsListString}
+`;
+
+            const payload = {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            { text: promptText },
+                            {
+                                inlineData: {
+                                    mimeType: mimeType,
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            isFoodIdentified: { type: "BOOLEAN" },
+                            items: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        id: { 
+                                            type: "STRING",
+                                            enum: allowedIds
+                                        }
+                                    },
+                                    required: ["id"]
+                                }
+                            }
+                        },
+                        required: ["isFoodIdentified", "items"]
+                    }
+                }
+            };
+
+            let retries = 3;
+            let delay = 1000;
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Ralat pelayan (${response.status})`);
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (!jsonText) {
+                        throw new Error("Pengecaman AI tidak memulangkan keputusan.");
+                    }
+
+                    return JSON.parse(jsonText);
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        function setAiLoadingState(isLoading) {
+            if (isLoading) {
+                scanningOverlay.classList.remove('hidden');
+                
+                aiStatusCard.className = "w-full bg-indigo-100 border-3 border-indigo-300 card-rounded p-4 mb-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3";
+                aiIconBg.className = "w-11 h-11 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm";
+                aiStatusIcon.className = "fa-solid fa-wand-magic-sparkles fa-spin";
+                aiStatusText.innerText = "Gemini AI sedang mengimbas makanan pada pinggan kamu...";
+                aiBadgeStatus.className = "bg-indigo-200 text-indigo-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-indigo-300 flex items-center gap-1.5";
+                aiBadgeStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-indigo-700"></i> Mengimbas...';
+
+                listHealthyFoods.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center p-6 text-center text-emerald-800 bg-white/80 rounded-2xl border-2 border-dashed border-emerald-300 min-h-[260px]">
+                        <div class="text-4xl mb-3 animate-bounce">🍚🥦</div>
+                        <p class="font-extrabold text-sm md:text-base">Mengenal pasti makanan sihat...</p>
+                    </div>`;
+
+                listUnhealthyFoods.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center p-6 text-center text-pink-800 bg-white/80 rounded-2xl border-2 border-dashed border-pink-300 min-h-[260px]">
+                        <div class="text-4xl mb-3 animate-bounce">🍩🍟</div>
+                        <p class="font-extrabold text-sm md:text-base">Mengenal pasti makanan perlu dikurangkan...</p>
+                    </div>`;
+
+                healthyCountTag.innerText = "Mengimbas...";
+                unhealthyCountTag.innerText = "Mengimbas...";
+            } else {
+                scanningOverlay.classList.add('hidden');
+            }
+        }
+
+        function setAiErrorState(message) {
+            aiStatusCard.className = "w-full bg-rose-100 border-3 border-rose-300 card-rounded p-4 mb-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3";
+            aiIconBg.className = "w-11 h-11 rounded-full bg-rose-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm";
+            aiStatusIcon.className = "fa-solid fa-circle-exclamation";
+            aiStatusText.innerText = "Ralat Pengecaman Gemini AI";
+            aiBadgeStatus.className = "bg-rose-200 text-rose-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-rose-300";
+            aiBadgeStatus.innerText = "Gagal";
+
+            listHealthyFoods.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center p-6 text-center text-rose-800 bg-white/80 rounded-2xl border-2 border-dashed border-rose-300 min-h-[240px]">
+                    <div class="text-3xl mb-2">⚠️</div>
+                    <p class="font-extrabold text-sm">${message}</p>
+                    <button onclick="startAiPlateScan()" class="mt-3 bg-rose-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs shadow-sm">Cuba Lagi</button>
+                </div>`;
+
+            listUnhealthyFoods.innerHTML = listHealthyFoods.innerHTML;
+        }
+
+        function cleanString(str) {
+            if (!str) return '';
+            return str.toString().toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+        }
+
+        // Strictly resolve food item from PRESET_FOODS dictionary
+        function resolveFoodItem(item) {
+            const rawId = item.id || '';
+            const normId = cleanString(rawId);
+
+            const matchedPreset = PRESET_FOODS.find(p => cleanString(p.id) === normId);
+            if (!matchedPreset) return null;
+
+            // Use custom user-uploaded reference image if available, else fallback to default reference
+            const activeImage = customFoodImages[normId] ? customFoodImages[normId].image : matchedPreset.image;
+
+            return {
+                id: matchedPreset.id,
+                name: matchedPreset.name,
+                image: activeImage,
+                category: matchedPreset.category,
+                emoji: matchedPreset.emoji
+            };
+        }
+
+        function renderAiResults(data) {
+            const isFoodIdentified = data.isFoodIdentified !== false;
+            const rawItems = data.items || [];
+
+            const uniqueFoodMap = new Map();
+            rawItems.forEach(item => {
+                const resolved = resolveFoodItem(item);
+                if (resolved && !uniqueFoodMap.has(resolved.id)) {
+                    uniqueFoodMap.set(resolved.id, resolved);
+                }
+            });
+
+            const processedFoods = Array.from(uniqueFoodMap.values());
+            const healthyFoods = processedFoods.filter(f => f.category === 'SIHAT');
+            const unhealthyFoods = processedFoods.filter(f => f.category === 'PERLU_DIKURANGKAN');
+
+            if (isFoodIdentified && processedFoods.length > 0) {
+                aiStatusCard.className = "w-full bg-emerald-100 border-3 border-emerald-300 card-rounded p-4 mb-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3";
+                aiIconBg.className = "w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm";
+                aiStatusIcon.className = "fa-solid fa-circle-check";
+                aiStatusText.innerText = "Pengecaman Gemini AI Berjaya!";
+                aiBadgeStatus.className = "bg-emerald-200 text-emerald-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-emerald-300";
+                aiBadgeStatus.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Selesai';
+            } else {
+                aiStatusCard.className = "w-full bg-amber-100 border-3 border-amber-300 card-rounded p-4 mb-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3";
+                aiIconBg.className = "w-11 h-11 rounded-full bg-amber-500 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-sm";
+                aiStatusIcon.className = "fa-solid fa-magnifying-glass";
+                aiStatusText.innerText = "Makanan Tidak Dapat Dikenal Pasti";
+                aiBadgeStatus.className = "bg-amber-200 text-amber-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-amber-300";
+                aiBadgeStatus.innerHTML = '<i class="fa-solid fa-circle-question mr-1"></i> Makanan Tidak Jelas';
+            }
+
+            // Render Healthy Foods Column
+            if (healthyFoods.length > 0) {
+                listHealthyFoods.innerHTML = healthyFoods.map(item => `
+                    <div class="bg-white p-3 rounded-2xl border-2 border-emerald-200 shadow-sm flex items-center gap-4 transform transition hover:scale-[1.02]">
+                        <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+                            <img src="${item.image}" alt="${escapeHtml(item.name)}" 
+                                 class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 border-emerald-300 shadow-sm">
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-extrabold text-emerald-950 text-base md:text-lg leading-tight">${escapeHtml(item.name)}</h4>
+                        </div>
+                    </div>
+                `).join('');
+                healthyCountTag.innerText = `${healthyFoods.length} Makanan Sihat Ditemui`;
+            } else {
+                listHealthyFoods.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center p-6 text-center text-emerald-800 bg-white/70 rounded-2xl border-2 border-dashed border-emerald-200 min-h-[240px]">
+                        <div class="text-3xl mb-2">🥦</div>
+                        <p class="font-extrabold text-sm">${isFoodIdentified ? 'Tiada Makanan Sihat Dikesan' : 'Tidak dapat mengenal pasti makanan sihat'}</p>
+                    </div>`;
+                healthyCountTag.innerText = "0 Makanan Sihat";
+            }
+
+            // Render Unhealthy Foods Column
+            if (unhealthyFoods.length > 0) {
+                listUnhealthyFoods.innerHTML = unhealthyFoods.map(item => `
+                    <div class="bg-white p-3 rounded-2xl border-2 border-pink-200 shadow-sm flex items-center gap-4 transform transition hover:scale-[1.02]">
+                        <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+                            <img src="${item.image}" alt="${escapeHtml(item.name)}" 
+                                 class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 border-pink-300 shadow-sm">
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-extrabold text-pink-950 text-base md:text-lg leading-tight">${escapeHtml(item.name)}</h4>
+                        </div>
+                    </div>
+                `).join('');
+                unhealthyCountTag.innerText = `${unhealthyFoods.length} Makanan Perlu Dikurangkan`;
+            } else {
+                listUnhealthyFoods.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center p-6 text-center text-pink-800 bg-white/70 rounded-2xl border-2 border-dashed border-pink-200 min-h-[240px]">
+                        <div class="text-3xl mb-2">${isFoodIdentified ? '🎉👏' : '❓'}</div>
+                        <p class="font-extrabold text-sm text-pink-900">${isFoodIdentified ? 'Bagus! Tiada Makanan Perlu Dikurangkan Dikesan' : 'Tidak dapat mengenal pasti makanan perlu dikurangkan'}</p>
+                    </div>`;
+                unhealthyCountTag.innerText = "0 Makanan Perlu Dikurangkan";
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        function showErrorBanner(message) {
+            textErrorMessage.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-2"></i> ${message}`;
+            bannerError.classList.remove('hidden');
+            bannerError.classList.add('flex');
+        }
+
+        function hideErrorBanner() {
+            bannerError.classList.add('hidden');
+            bannerError.classList.remove('flex');
+        }
+
+        function openCustomImageModal() {
+            renderCustomFoodList();
+            const modal = document.getElementById('modal-custom-images');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCustomImageModal() {
+            const modal = document.getElementById('modal-custom-images');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function handleZipUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const zipStatusMsg = document.getElementById('zip-status-msg');
+            zipStatusMsg.className = "mt-3 text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 p-2 rounded-xl w-full text-center flex items-center justify-center gap-2";
+            zipStatusMsg.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-amber-600"></i> Membaca dan mengestrak fail ZIP...';
+            zipStatusMsg.classList.remove('hidden');
+
+            let totalExtracted = 0;
+            const matchedNames = [];
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.name.toLowerCase().endsWith('.zip')) continue;
+
+                try {
+                    const zip = await JSZip.loadAsync(file);
+                    
+                    for (let relativePath in zip.files) {
+                        const zipEntry = zip.files[relativePath];
+                        if (zipEntry.dir) continue;
+
+                        const fileName = zipEntry.name.split('/').pop();
+                        if (!fileName || fileName.startsWith('.') || fileName.startsWith('__MACOSX')) continue;
+
+                        const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+                        const cleanFileName = cleanString(nameWithoutExt);
+
+                        // Match zip filename against PRESET_FOODS
+                        const matchedFood = PRESET_FOODS.find(preset => {
+                            const pIdClean = cleanString(preset.id);
+                            const pNameClean = cleanString(preset.name);
+                            return cleanFileName === pIdClean || 
+                                   cleanFileName.includes(pIdClean) || 
+                                   pIdClean.includes(cleanFileName) ||
+                                   cleanFileName.includes(pNameClean);
+                        });
+
+                        if (matchedFood) {
+                            const base64Data = await zipEntry.async('base64');
+                            let mimeType = 'image/jpeg';
+                            if (fileName.toLowerCase().endsWith('.png')) mimeType = 'image/png';
+                            if (fileName.toLowerCase().endsWith('.webp')) mimeType = 'image/webp';
+
+                            const normId = cleanString(matchedFood.id);
+                            customFoodImages[normId] = {
+                                name: matchedFood.name,
+                                image: `data:${mimeType};base64,${base64Data}`,
+                                category: matchedFood.category,
+                                emoji: matchedFood.emoji
+                            };
+
+                            totalExtracted++;
+                            if (!matchedNames.includes(matchedFood.name)) {
+                                matchedNames.push(matchedFood.name);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error("Ralat pengekstrakan ZIP:", err);
+                }
+            }
+
+            // Save extracted custom reference images to Local Storage
+            try {
+                localStorage.setItem('pinggan_sihat_custom_images', JSON.stringify(customFoodImages));
+            } catch(e) {
+                console.warn("Spasium simpanan tempatan terhad.", e);
+            }
+
+            renderCustomFoodList();
+
+            if (totalExtracted > 0) {
+                zipStatusMsg.className = "mt-3 text-xs font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 p-2 rounded-xl w-full text-center";
+                zipStatusMsg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Berjaya mengestrak ${totalExtracted} gambar rujukan makanan! (${matchedNames.join(', ')})`;
+            } else {
+                zipStatusMsg.className = "mt-3 text-xs font-bold text-rose-900 bg-rose-100 border border-rose-300 p-2 rounded-xl w-full text-center";
+                zipStatusMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-600 mr-1"></i> Tiada nama fail gambar yang sepadan dengan 21 makanan ditemui dalam fail ZIP.`;
+            }
+        }
+
+        function renderCustomFoodList() {
+            const container = document.getElementById('custom-foods-list');
+            if (!container) return;
+
+            container.innerHTML = PRESET_FOODS.map(food => {
+                const normId = cleanString(food.id);
+                const activeImg = customFoodImages[normId] ? customFoodImages[normId].image : food.image;
+                const isCustom = !!customFoodImages[normId];
+                const isHealthy = food.category === 'SIHAT';
+
+                return `
+                    <div class="p-3 bg-slate-50 rounded-2xl border-2 ${isHealthy ? 'border-emerald-200' : 'border-pink-200'} flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${activeImg}" alt="${escapeHtml(food.name)}" class="w-12 h-12 rounded-xl object-cover border-2 ${isHealthy ? 'border-emerald-400' : 'border-pink-400'} shadow-sm">
+                            <div>
+                                <h5 class="font-extrabold text-slate-800 text-sm md:text-base">${escapeHtml(food.name)}</h5>
+                                <span class="text-xs font-bold ${isHealthy ? 'text-emerald-600' : 'text-pink-600'}">
+                                    ${isHealthy ? '😊 Sihat' : '😟 Perlu Dikurangkan'} ${isCustom ? '• (Gambar Rujukan ZIP)' : ''}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <label class="btn-kid bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold text-xs px-3 py-2 rounded-xl cursor-pointer border-b-2 border-amber-600 flex items-center gap-1">
+                                <i class="fa-solid fa-upload"></i>
+                                <span>Tukar</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="uploadFoodReferenceImage(event, '${food.id}', '${escapeHtml(food.name)}', '${food.category}', '${food.emoji}')">
+                            </label>
+                            ${isCustom ? `
+                                <button onclick="removeFoodReferenceImage('${food.id}')" class="text-rose-500 hover:text-rose-700 p-2 font-bold text-sm" title="Padam Gambar">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function uploadFoodReferenceImage(event, foodId, name, category, emoji) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const normId = cleanString(foodId);
+                customFoodImages[normId] = {
+                    name: name,
+                    image: e.target.result,
+                    category: category,
+                    emoji: emoji
+                };
+                try {
+                    localStorage.setItem('pinggan_sihat_custom_images', JSON.stringify(customFoodImages));
+                } catch(err) {}
+                renderCustomFoodList();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeFoodReferenceImage(foodId) {
+            const normId = cleanString(foodId);
+            delete customFoodImages[normId];
+            try {
+                localStorage.setItem('pinggan_sihat_custom_images', JSON.stringify(customFoodImages));
+            } catch(err) {}
+            renderCustomFoodList();
+        }
+
+        function resetAllReferenceImages() {
+            customFoodImages = {};
+            localStorage.removeItem('pinggan_sihat_custom_images');
+            document.getElementById('zip-status-msg').classList.add('hidden');
+            renderCustomFoodList();
+        }
+    </script>
+</body>
+</html>
